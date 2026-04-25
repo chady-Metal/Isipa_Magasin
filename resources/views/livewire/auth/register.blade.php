@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Livewire\Volt\Component;
 new #[Layout('components.layouts.auth')] class extends Component {
     public string $name = '';
     public string $email = '';
+    public string $numeroTelephone = '';
     public string $password = '';
     public string $password_confirmation = '';
 
@@ -22,10 +24,12 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'numeroTelephone' => ['nullable', 'string', 'max:30'],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['roles_id'] = Role::where('nom', 'Client')->value('id');
 
         event(new Registered(($user = User::create($validated))));
 
@@ -36,7 +40,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header title="Create an account" description="Enter your details below to create your account" />
+    <x-auth-header title="Creer votre compte client" description="Rejoignez ISIPA Store pour commander et suivre vos achats" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -50,6 +54,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <!-- Email Address -->
         <div class="grid gap-2">
             <flux:input wire:model="email" id="email" label="{{ __('Email address') }}" type="email" name="email" required autocomplete="email" placeholder="email@example.com" />
+        </div>
+
+        <div class="grid gap-2">
+            <flux:input wire:model="numeroTelephone" id="numeroTelephone" label="{{ __('Numero de telephone') }}" type="text" name="numeroTelephone" autocomplete="tel" placeholder="+243..." />
         </div>
 
         <!-- Password -->
@@ -81,14 +89,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
 
         <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Create account') }}
+            <flux:button type="submit" variant="primary" class="w-full !rounded-xl !bg-[var(--isipa-primary)] hover:!bg-[#1d22b8]">
+                {{ __('Creer mon compte') }}
             </flux:button>
         </div>
     </form>
 
-    <div class="space-x-1 text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Already have an account?
-        <x-text-link href="{{ route('login') }}">Log in</x-text-link>
+    <div class="space-x-1 text-center text-sm text-slate-600">
+        Vous avez deja un compte ?
+        <x-text-link class="font-semibold text-[var(--isipa-primary)]" href="{{ route('login') }}">Connexion</x-text-link>
     </div>
 </div>

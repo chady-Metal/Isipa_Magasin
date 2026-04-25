@@ -73,44 +73,60 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header title="Log in to your account" description="Enter your email and password below to log in" />
+    <x-auth-header title="Connexion a votre compte" description="Entrez vos identifiants pour acceder a la plateforme ISIPA Store" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
-    <form wire:submit="login" class="flex flex-col gap-6">
+    <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
+        @csrf
         <!-- Email Address -->
-        <flux:input wire:model="email" label="{{ __('Email address') }}" type="email" name="email" required autofocus autocomplete="email" placeholder="email@example.com" />
+        <div class="grid gap-2">
+            <label for="email" class="text-sm font-semibold text-slate-700">{{ __('Email address') }}</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email" placeholder="email@example.com" class="store-input" />
+            @error('email')
+                <p class="text-sm text-rose-600">{{ $message }}</p>
+            @enderror
+        </div>
 
         <!-- Password -->
         <div class="relative">
-            <flux:input
-                wire:model="password"
-                label="{{ __('Password') }}"
-                type="password"
-                name="password"
-                required
-                autocomplete="current-password"
-                placeholder="Password"
-            />
+            <div class="grid gap-2">
+                <label for="password" class="text-sm font-semibold text-slate-700">{{ __('Password') }}</label>
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="Password"
+                    class="store-input"
+                />
+                @error('password')
+                    <p class="text-sm text-rose-600">{{ $message }}</p>
+                @enderror
+            </div>
 
             @if (Route::has('password.request'))
-                <x-text-link class="absolute right-0 top-0" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                <x-text-link class="absolute right-0 top-0 font-semibold text-[var(--isipa-primary)]" href="{{ route('password.request') }}">
+                    {{ __('Mot de passe oublie ?') }}
                 </x-text-link>
             @endif
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" label="{{ __('Remember me') }}" />
+        <label class="inline-flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" name="remember" value="1" class="rounded border-slate-300 text-[var(--isipa-primary)] focus:ring-[var(--isipa-secondary)]" />
+            {{ __('Remember me') }}
+        </label>
 
         <div class="flex items-center justify-end">
-            <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
+            <button type="submit" class="store-btn-primary w-full">{{ __('Se connecter') }}</button>
         </div>
     </form>
 
-    <div class="space-x-1 text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Don't have an account?
-        <x-text-link href="{{ route('register') }}">Sign up</x-text-link>
+    <div class="space-x-1 text-center text-sm text-slate-600">
+        Pas encore de compte ?
+        <x-text-link class="font-semibold text-[var(--isipa-primary)]" href="{{ route('register') }}">Inscription</x-text-link>
     </div>
 </div>

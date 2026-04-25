@@ -69,7 +69,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header title="Reset password" description="Please enter your new password below" />
+    <x-auth-header title="Reinitialiser le mot de passe" description="Definissez un nouveau mot de passe securise" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -109,8 +109,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
 
         <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Reset password') }}
+            <flux:button type="submit" variant="primary" class="w-full !rounded-xl !bg-[var(--isipa-primary)] hover:!bg-[#1d22b8]">
+                {{ __('Mettre a jour le mot de passe') }}
             </flux:button>
         </div>
     </form>

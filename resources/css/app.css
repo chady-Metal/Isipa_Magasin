@@ -61,6 +61,198 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+:root {
+    --isipa-primary: #2328CF;
+    --isipa-secondary: #517AFF;
+    --isipa-tertiary: #FFE970;
+    --isipa-ink: #0e1a3a;
+    --isipa-soft: #e5ecff;
+    --isipa-surface: #f8faff;
+    --isipa-muted: #647194;
+    --isipa-success: #16a34a;
+    --isipa-danger: #e11d48;
+}
+
+.store-bg {
+    background:
+        radial-gradient(circle at 10% 0%, rgba(81, 122, 255, 0.18), transparent 35%),
+        radial-gradient(circle at 90% 0%, rgba(255, 233, 112, 0.3), transparent 35%),
+        linear-gradient(180deg, #fdfefe 0%, var(--isipa-surface) 100%);
+}
+
+.store-btn-primary {
+    @apply rounded-xl px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:shadow-xl;
+    background: linear-gradient(135deg, var(--isipa-primary), var(--isipa-secondary));
+}
+
+.store-btn-secondary {
+    @apply rounded-xl border border-[var(--isipa-primary)] px-4 py-2 text-sm font-semibold text-[var(--isipa-primary)] transition hover:bg-[var(--isipa-soft)];
+}
+
+.store-card {
+    @apply rounded-2xl border border-slate-200/70 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg;
+}
+
+.store-card-rich {
+    background:
+        linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+    border-color: rgba(81, 122, 255, 0.22);
+}
+
+.store-nav-link {
+    @apply rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition duration-200 hover:bg-[var(--isipa-soft)] hover:text-[var(--isipa-primary)];
+}
+
+.store-nav-link-active {
+    @apply bg-[var(--isipa-soft)] text-[var(--isipa-primary)];
+}
+
+.store-tile {
+    @apply rounded-2xl border border-white/40 bg-white/75 p-5 shadow-md backdrop-blur transition duration-200 hover:-translate-y-1 hover:shadow-xl;
+}
+
+.hero-shell {
+    position: relative;
+    background: linear-gradient(130deg, #2328cf 0%, #3053eb 45%, #517aff 100%);
+}
+
+.hero-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(8px);
+    opacity: 0.45;
+}
+
+.hero-orb-a {
+    width: 220px;
+    height: 220px;
+    right: -40px;
+    top: -50px;
+    background: #ffe970;
+}
+
+.hero-orb-b {
+    width: 140px;
+    height: 140px;
+    right: 80px;
+    bottom: -40px;
+    background: #84a0ff;
+}
+
+.store-btn-light {
+    @apply rounded-xl bg-white px-4 py-2 text-sm font-bold text-[var(--isipa-primary)] transition hover:scale-[1.02];
+}
+
+.store-btn-secondary-alt {
+    @apply rounded-xl border border-white/70 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10;
+}
+
+.auth-bg {
+    background:
+        radial-gradient(circle at 10% 10%, rgba(81, 122, 255, 0.28), transparent 40%),
+        radial-gradient(circle at 90% 10%, rgba(255, 233, 112, 0.35), transparent 42%),
+        linear-gradient(180deg, #f8faff 0%, #eef4ff 100%);
+}
+
+.auth-shape {
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+}
+
+.auth-shape-a {
+    width: 300px;
+    height: 300px;
+    left: -80px;
+    top: -80px;
+    background: radial-gradient(circle, rgba(35, 40, 207, 0.28) 0%, rgba(35, 40, 207, 0) 70%);
+}
+
+.auth-shape-b {
+    width: 360px;
+    height: 360px;
+    right: -120px;
+    bottom: -100px;
+    background: radial-gradient(circle, rgba(255, 233, 112, 0.38) 0%, rgba(255, 233, 112, 0) 70%);
+}
+
+.auth-form-shell {
+    @apply rounded-[1.5rem] border border-white/60 bg-white/70 p-6 shadow-xl backdrop-blur sm:p-8;
+}
+
+.glass-panel {
+    @apply rounded-[1.5rem] border border-white/60 bg-white/80 shadow-[0_10px_35px_rgba(28,46,110,0.15)] backdrop-blur;
+}
+
+.section-tag {
+    @apply inline-flex rounded-full border border-[var(--isipa-secondary)]/30 bg-[var(--isipa-soft)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--isipa-primary)];
+}
+
+.section-title {
+    @apply text-3xl font-black tracking-tight text-[var(--isipa-ink)] sm:text-4xl;
+}
+
+.section-subtitle {
+    @apply mt-2 max-w-2xl text-sm text-[var(--isipa-muted)] sm:text-base;
+}
+
+.store-input,
+.store-select,
+.store-textarea {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition duration-200 focus:border-[var(--isipa-secondary)] focus:ring-2 focus:ring-[var(--isipa-secondary)]/25;
+}
+
+.metric-card {
+    @apply rounded-2xl border border-[var(--isipa-secondary)]/20 bg-white/85 p-4 shadow-md backdrop-blur;
+}
+
+.metric-value {
+    @apply text-2xl font-black text-[var(--isipa-primary)];
+}
+
+.metric-label {
+    @apply text-xs font-semibold uppercase tracking-wide text-slate-500;
+}
+
+.status-dot {
+    @apply inline-block h-2.5 w-2.5 rounded-full;
+}
+
+.status-dot-success {
+    @apply bg-emerald-500;
+}
+
+.status-dot-warn {
+    @apply bg-amber-500;
+}
+
+.status-dot-danger {
+    @apply bg-rose-500;
+}
+
+.reveal-up {
+    animation: reveal-up 0.55s ease-out both;
+}
+
+.reveal-delay-1 {
+    animation-delay: 0.08s;
+}
+
+.reveal-delay-2 {
+    animation-delay: 0.16s;
+}
+
+.reveal-delay-3 {
+    animation-delay: 0.24s;
+}
+
+@keyframes reveal-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

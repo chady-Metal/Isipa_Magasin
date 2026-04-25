@@ -21,7 +21,9 @@ class User extends Authenticatable // implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
+        'numeroTelephone',
         'password',
+        'roles_id',
     ];
 
     /**
@@ -56,5 +58,25 @@ class User extends Authenticatable // implements MustVerifyEmail
             ->explode(' ')
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
+    }
+
+    public function commandes()
+    {
+        return $this->hasMany(Commande::class, 'user_id');
+    }
+
+    public function panier()
+    {
+        return $this->hasOne(Panier::class, 'user_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'roles_id');
+    }
+
+    public function reclamations()
+    {
+        return $this->hasMany(Reclamation::class, 'user_id');
     }
 }
