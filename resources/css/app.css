@@ -9,20 +9,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-
-    --color-zinc-50: #fafafa;
-    --color-zinc-100: #f5f5f5;
-    --color-zinc-200: #e5e5e5;
-    --color-zinc-300: #d4d4d4;
-    --color-zinc-400: #a3a3a3;
-    --color-zinc-500: #737373;
-    --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
-
+    --font-sans: 'Merriweather', serif;
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
@@ -37,13 +24,16 @@
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
     ::backdrop,
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
+    }
+
+    body {
+        font-family: var(--font-sans);
     }
 }
 
@@ -52,7 +42,7 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],
@@ -62,15 +52,17 @@ select:focus[data-flux-control] {
 }
 
 :root {
-    --isipa-primary: #2328CF;
-    --isipa-secondary: #517AFF;
-    --isipa-tertiary: #FFE970;
+    --isipa-primary: #2328cf;
+    --isipa-secondary: #517aff;
+    --isipa-tertiary: #ffe970;
     --isipa-ink: #0e1a3a;
     --isipa-soft: #e5ecff;
     --isipa-surface: #f8faff;
     --isipa-muted: #647194;
     --isipa-success: #16a34a;
     --isipa-danger: #e11d48;
+    --isipa-admin-ink: #172554;
+    --isipa-admin-surface: #f4f7ff;
 }
 
 .store-bg {
@@ -78,6 +70,13 @@ select:focus[data-flux-control] {
         radial-gradient(circle at 10% 0%, rgba(81, 122, 255, 0.18), transparent 35%),
         radial-gradient(circle at 90% 0%, rgba(255, 233, 112, 0.3), transparent 35%),
         linear-gradient(180deg, #fdfefe 0%, var(--isipa-surface) 100%);
+}
+
+.admin-bg {
+    background:
+        linear-gradient(180deg, rgba(35, 40, 207, 0.08) 0%, rgba(255, 255, 255, 0.96) 30%),
+        radial-gradient(circle at top right, rgba(81, 122, 255, 0.14), transparent 28%),
+        linear-gradient(180deg, #f8fbff 0%, var(--isipa-admin-surface) 100%);
 }
 
 .store-btn-primary {
@@ -89,14 +88,50 @@ select:focus[data-flux-control] {
     @apply rounded-xl border border-[var(--isipa-primary)] px-4 py-2 text-sm font-semibold text-[var(--isipa-primary)] transition hover:bg-[var(--isipa-soft)];
 }
 
+.store-btn-danger {
+    @apply rounded-xl border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-50;
+}
+
 .store-card {
     @apply rounded-2xl border border-slate-200/70 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg;
 }
 
 .store-card-rich {
-    background:
-        linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
     border-color: rgba(81, 122, 255, 0.22);
+}
+
+.admin-card {
+    @apply rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-[0_14px_40px_rgba(23,37,84,0.08)];
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 249, 255, 0.98) 100%);
+}
+
+.admin-nav-link {
+    @apply rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--isipa-secondary)] hover:text-[var(--isipa-primary)];
+}
+
+.admin-nav-link-active {
+    @apply border-transparent text-white shadow-lg;
+    background: linear-gradient(135deg, var(--isipa-primary), var(--isipa-secondary));
+}
+
+.admin-stat-card {
+    @apply overflow-hidden rounded-[1.5rem] border border-white/70 p-5 shadow-lg;
+}
+
+.admin-stat-card-blue {
+    background: linear-gradient(135deg, rgba(35, 40, 207, 0.92), rgba(81, 122, 255, 0.92));
+    color: white;
+}
+
+.admin-stat-card-gold {
+    background: linear-gradient(135deg, rgba(255, 233, 112, 0.9), rgba(255, 201, 72, 0.92));
+    color: #5a4300;
+}
+
+.admin-stat-card-ice {
+    background: linear-gradient(135deg, rgba(229, 236, 255, 0.96), rgba(255, 255, 255, 0.96));
+    color: var(--isipa-admin-ink);
 }
 
 .store-nav-link {
@@ -154,13 +189,15 @@ select:focus[data-flux-control] {
         linear-gradient(180deg, #f8faff 0%, #eef4ff 100%);
 }
 
-.auth-shape {
+.auth-shape,
+.admin-auth-shape {
     position: absolute;
     border-radius: 9999px;
     pointer-events: none;
 }
 
-.auth-shape-a {
+.auth-shape-a,
+.admin-auth-shape-a {
     width: 300px;
     height: 300px;
     left: -80px;
@@ -168,7 +205,8 @@ select:focus[data-flux-control] {
     background: radial-gradient(circle, rgba(35, 40, 207, 0.28) 0%, rgba(35, 40, 207, 0) 70%);
 }
 
-.auth-shape-b {
+.auth-shape-b,
+.admin-auth-shape-b {
     width: 360px;
     height: 360px;
     right: -120px;
@@ -176,8 +214,9 @@ select:focus[data-flux-control] {
     background: radial-gradient(circle, rgba(255, 233, 112, 0.38) 0%, rgba(255, 233, 112, 0) 70%);
 }
 
-.auth-form-shell {
-    @apply rounded-[1.5rem] border border-white/60 bg-white/70 p-6 shadow-xl backdrop-blur sm:p-8;
+.auth-form-shell,
+.admin-auth-shell {
+    @apply rounded-[1.5rem] border border-white/60 bg-white/75 p-6 shadow-xl backdrop-blur sm:p-8;
 }
 
 .glass-panel {
@@ -193,7 +232,7 @@ select:focus[data-flux-control] {
 }
 
 .section-subtitle {
-    @apply mt-2 max-w-2xl text-sm text-[var(--isipa-muted)] sm:text-base;
+    @apply mt-2 max-w-3xl text-sm text-[var(--isipa-muted)] sm:text-base;
 }
 
 .store-input,
@@ -230,6 +269,22 @@ select:focus[data-flux-control] {
     @apply bg-rose-500;
 }
 
+.table-shell {
+    @apply overflow-hidden rounded-2xl border border-slate-200 bg-white;
+}
+
+.table-shell table {
+    @apply min-w-full text-sm;
+}
+
+.table-shell th {
+    @apply bg-slate-50 px-4 py-3 text-left font-semibold text-slate-600;
+}
+
+.table-shell td {
+    @apply border-t border-slate-100 px-4 py-3 align-top text-slate-700;
+}
+
 .reveal-up {
     animation: reveal-up 0.55s ease-out both;
 }
@@ -246,11 +301,24 @@ select:focus[data-flux-control] {
     animation-delay: 0.24s;
 }
 
+.modal-backdrop {
+    @apply fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 px-4 py-8;
+}
+
+.modal-backdrop.is-open {
+    @apply flex;
+}
+
+.modal-panel {
+    @apply max-h-full w-full max-w-4xl overflow-y-auto rounded-[1.75rem] bg-white shadow-2xl;
+}
+
 @keyframes reveal-up {
     from {
         opacity: 0;
         transform: translateY(14px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

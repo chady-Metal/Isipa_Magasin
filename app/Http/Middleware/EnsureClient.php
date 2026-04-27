@@ -12,9 +12,11 @@ class EnsureClient
     {
         $user = $request->user();
 
-        if (! $user || ! $user->role || strtolower($user->role->nom) !== 'client') {
+        if (! $user || ! $user->isClient()) {
             abort(403, 'Acces reserve aux clients.');
         }
+
+        $user->forceFill(['last_seen_at' => now()])->save();
 
         return $next($request);
     }

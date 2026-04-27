@@ -12,7 +12,7 @@ class PanierController extends Controller
         $panier = $request->user()->panier()->firstOrCreate(['user_id' => $request->user()->id]);
         $panier->load('produits');
 
-        $total = $panier->produits->sum(fn ($produit) => $produit->prix * $produit->pivot->quantite);
+        $total = $panier->produits->sum(fn ($produit) => $produit->prixPromo() * $produit->pivot->quantite);
 
         return view('store.panier.index', compact('panier', 'total'));
     }
@@ -28,13 +28,8 @@ class PanierController extends Controller
         }
 
         $panier = $request->user()->panier()->firstOrCreate(['user_id' => $request->user()->id]);
-
         $existing = $panier->produits()->where('produit_id', $produit->id)->first();
-        $nouvelleQuantite = $validated['quantite'];
-
-        if ($existing) {
-            $nouvelleQuantite += $existing->pivot->quantite;
-        }
+        $nouvelleQuantite = $validated['quantite'] + ($existing?->pivot->quantite ?? 0);
 
         if ($nouvelleQuantite > $produit->stock) {
             return back()->with('error', 'La quantite demandee depasse le stock disponible.');
