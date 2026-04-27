@@ -16,9 +16,9 @@ return new class extends Migration
             $table->decimal("montant", 10, 2);
             $table->date("date_paiement");
             $table->string("methode_paiement");
-                $table->foreignId("commande_id")->constrained("commandes")->onDelete("cascade");    
-                $table->string("numero_compte");
-                $table->string("reference_transaction")->nullable();
+            $table->foreignId("commande_id")->constrained("commandes")->onDelete("cascade");    
+            $table->string("numero_compte");
+            $table->string("reference_transaction")->nullable();
             $table->timestamps();
         });
     }
