@@ -4,7 +4,7 @@
     <section class="hero-shell reveal-up mb-10 overflow-hidden rounded-[2rem] p-8 text-white shadow-2xl sm:p-12">
         <div class="relative z-10 max-w-3xl">
             <p class="mb-3 inline-flex rounded-full bg-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em]">ISIPA Informatique</p>
-            <h1 class="text-3xl font-black leading-tight sm:text-5xl">La vitrine digitale des produits malveillants de l'ISIPA</h1>
+            <h1 class="text-3xl font-black leading-tight sm:text-5xl">La vitrine digitale des produits informatiques de l'ISIPA</h1>
             <p class="mt-5 max-w-2xl text-sm text-blue-100 sm:text-base">
                 Explorez notre catalogue, creez votre compte client, ajoutez vos articles au panier et commandez rapidement avec paiement integre.
             </p>
