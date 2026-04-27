@@ -23,7 +23,7 @@ class SessionController
         $password = (string) $data['password'];
         $remember = (bool) ($data['remember'] ?? false);
 
-        $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
+        $user = User::with('role')->whereRaw('LOWER(email) = ?', [$email])->first();
 
         if (! $user || ! Hash::check($password, $user->password)) {
             throw ValidationException::withMessages([
@@ -31,8 +31,19 @@ class SessionController
             ]);
         }
 
+        if ($user->isAdmin()) {
+            throw ValidationException::withMessages([
+                'email' => 'Utilisez l interface administrateur pour ce compte: /admin/login',
+            ]);
+        }
+
         Auth::login($user, $remember);
         $request->session()->regenerate();
+
+        $user->forceFill([
+            'last_login_at' => now(),
+            'last_seen_at' => now(),
+        ])->save();
 
         return redirect()->intended(route('dashboard'));
     }

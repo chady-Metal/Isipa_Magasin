@@ -8,6 +8,7 @@ use App\Notifications\CommandeConfirmeeNotification;
 use App\Notifications\CommandeRejeteeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CommandeController extends Controller
 {
@@ -21,8 +22,9 @@ class CommandeController extends Controller
             ->get();
 
         $notifications = $request->user()->notifications()->latest()->take(8)->get();
+        $totalSpent = $commandes->sum(fn ($commande) => (float) ($commande->paiement->montant ?? 0));
 
-        return view('store.commandes.index', compact('commandes', 'notifications'));
+        return view('store.commandes.index', compact('commandes', 'notifications', 'totalSpent'));
     }
 
     public function store(Request $request)
@@ -46,11 +48,11 @@ class CommandeController extends Controller
             }
         }
 
-        // Transaction: cree la commande, enregistre le paiement, decremente le stock et vide le panier.
         DB::transaction(function () use ($validated, $panier, $user) {
             $commande = Commande::create([
                 'date_commande' => now()->toDateString(),
                 'statut' => Commande::STATUT_EN_ATTENTE,
+                'tracking_code' => 'TRK-'.Str::upper(Str::random(10)),
                 'user_id' => $user->id,
                 'adresse_livraison' => $validated['adresse_livraison'],
                 'date_livraison' => now()->addDays(3)->toDateString(),
@@ -60,10 +62,9 @@ class CommandeController extends Controller
 
             foreach ($panier->produits as $produit) {
                 $quantite = $produit->pivot->quantite;
-                $montantTotal += $produit->prix * $quantite;
+                $montantTotal += $produit->prixPromo() * $quantite;
 
                 $commande->produits()->attach($produit->id, ['quantite' => $quantite]);
-
                 $produit->decrement('stock', $quantite);
             }
 
@@ -105,17 +106,24 @@ class CommandeController extends Controller
         return back()->with('success', 'Commande annulee avec succes.');
     }
 
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        $commandes = Commande::with(['user', 'produits', 'paiement'])
+        $this->ensurePermission($request, 'orders.view');
+
+        $commandes = Commande::with(['user', 'produits', 'paiement', 'processedBy'])
             ->latest()
             ->paginate(12);
 
-        return view('store.admin.commandes.index', compact('commandes'));
+        $salesTotal = Paiement::sum('montant');
+        $pendingCount = Commande::where('statut', Commande::STATUT_EN_ATTENTE)->count();
+
+        return view('store.admin.commandes.index', compact('commandes', 'salesTotal', 'pendingCount'));
     }
 
-    public function confirm(Commande $commande)
+    public function confirm(Request $request, Commande $commande)
     {
+        $this->ensurePermission($request, 'orders.manage');
+
         if (! $commande->canBeManagedByAdmin()) {
             return back()->with('error', 'Cette commande ne peut plus etre modifiee.');
         }
@@ -123,15 +131,20 @@ class CommandeController extends Controller
         $commande->update([
             'statut' => Commande::STATUT_CONFIRMEE,
             'rejection_reason' => null,
+            'processed_by' => $request->user()->id,
+            'processed_at' => now(),
         ]);
 
         $commande->user?->notify(new CommandeConfirmeeNotification($commande));
+        $this->logAdminActivity($request, 'Confirmation commande', 'commande', $commande->id, $commande->tracking_code);
 
         return back()->with('success', "Commande #{$commande->id} confirmee.");
     }
 
     public function reject(Request $request, Commande $commande)
     {
+        $this->ensurePermission($request, 'orders.manage');
+
         if (! $commande->canBeManagedByAdmin()) {
             return back()->with('error', 'Cette commande ne peut plus etre modifiee.');
         }
@@ -140,7 +153,7 @@ class CommandeController extends Controller
             'rejection_reason' => ['required', 'string', 'min:10', 'max:1000'],
         ]);
 
-        DB::transaction(function () use ($commande, $data) {
+        DB::transaction(function () use ($commande, $data, $request) {
             $commande->load('produits');
 
             foreach ($commande->produits as $produit) {
@@ -150,10 +163,13 @@ class CommandeController extends Controller
             $commande->update([
                 'statut' => Commande::STATUT_REJETEE,
                 'rejection_reason' => $data['rejection_reason'],
+                'processed_by' => $request->user()->id,
+                'processed_at' => now(),
             ]);
         });
 
         $commande->user?->notify(new CommandeRejeteeNotification($commande, $data['rejection_reason']));
+        $this->logAdminActivity($request, 'Rejet commande', 'commande', $commande->id, $data['rejection_reason']);
 
         return back()->with('success', "Commande #{$commande->id} rejetee.");
     }

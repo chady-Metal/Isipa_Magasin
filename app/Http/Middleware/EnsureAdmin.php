@@ -12,9 +12,11 @@ class EnsureAdmin
     {
         $user = $request->user();
 
-        if (! $user || ! $user->role || strtolower($user->role->nom) !== 'administrateur') {
+        if (! $user || ! $user->isAdmin()) {
             abort(403, 'Acces reserve aux administrateurs.');
         }
+
+        $user->forceFill(['last_seen_at' => now()])->save();
 
         return $next($request);
     }

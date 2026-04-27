@@ -13,7 +13,17 @@ class Reclamation extends Model
         'produit_id',
         'message',
         'statut',
+        'admin_response',
+        'responded_by',
+        'responded_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'responded_at' => 'datetime',
+        ];
+    }
 
     public function user()
     {
@@ -23,5 +33,10 @@ class Reclamation extends Model
     public function produit()
     {
         return $this->belongsTo(Produit::class, 'produit_id');
+    }
+
+    public function responder()
+    {
+        return $this->belongsTo(User::class, 'responded_by');
     }
 }
