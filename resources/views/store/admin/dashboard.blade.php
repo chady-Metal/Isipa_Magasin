@@ -48,7 +48,12 @@
 
         <div class="space-y-6">
             <article class="admin-card">
-                <h2 class="text-xl font-black text-[var(--isipa-admin-ink)]">Mouvements administrateurs</h2>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-black text-[var(--isipa-admin-ink)]">Mouvements administrateurs</h2>
+                    @if (auth()->user()->hasPermission('admins.activity.view'))
+                        <a href="{{ route('admin.admins.index') }}" class="text-xs font-bold uppercase tracking-wider text-[var(--isipa-primary)] hover:underline" data-async-link>Gérer</a>
+                    @endif
+                </div>
                 <div class="mt-4 space-y-3">
                     @foreach ($recentActivities as $activity)
                         <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm">

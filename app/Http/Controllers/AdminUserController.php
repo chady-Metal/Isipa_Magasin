@@ -34,7 +34,6 @@ class AdminUserController extends Controller
 
         $user->update([
             'deletion_reason' => $data['justification'],
-            'deleted_at' => now(),
         ]);
         $user->delete();
 
@@ -77,7 +76,6 @@ class AdminUserController extends Controller
             'roles_id' => $data['roles_id'],
         ]);
 
-        $user->permissions()->detach();
         $this->logAdminActivity($request, 'Creation administrateur', 'user', $user->id, $user->email);
 
         return back()->with('success', 'Compte administrateur cree avec succes.');

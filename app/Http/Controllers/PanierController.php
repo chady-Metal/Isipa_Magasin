@@ -23,10 +23,6 @@ class PanierController extends Controller
             'quantite' => ['required', 'integer', 'min:1'],
         ]);
 
-        if ($produit->stock < $validated['quantite']) {
-            return back()->with('error', 'Stock insuffisant pour ce produit.');
-        }
-
         $panier = $request->user()->panier()->firstOrCreate(['user_id' => $request->user()->id]);
         $existing = $panier->produits()->where('produit_id', $produit->id)->first();
         $nouvelleQuantite = $validated['quantite'] + ($existing?->pivot->quantite ?? 0);

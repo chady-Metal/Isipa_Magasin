@@ -24,7 +24,7 @@
                 <input type="password" name="password" class="store-input" placeholder="Mot de passe" required />
                 <input type="password" name="password_confirmation" class="store-input" placeholder="Confirmation" required />
                 <div class="md:col-span-2 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
-                    Les permissions sont maintenant appliquees automatiquement selon le role choisi.
+                    Les permissions sont appliquees automatiquement selon le role choisi.
                 </div>
                 <div class="md:col-span-2">
                     <button type="submit" class="store-btn-primary">Creer le compte</button>
@@ -39,12 +39,12 @@
                 <div class="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
                     <div>
                         <h2 class="text-lg font-black text-[var(--isipa-admin-ink)]">{{ $admin->name }}</h2>
-                        <p class="text-sm text-slate-500">{{ $admin->email }} | {{ $admin->role->nom }}</p>
+                        <p class="text-sm text-slate-500">{{ $admin->email }} | {{ $admin->role->nom ?? 'Aucun rôle' }}</p>
                         <p class="mt-2 text-sm text-slate-600">Derniere connexion: {{ optional($admin->last_login_at)->format('d/m/Y H:i') ?: 'Jamais' }}</p>
                         <p class="text-sm text-slate-600">Derniere operation: {{ $admin->last_operation ?: 'Aucune' }}</p>
                         <div class="mt-3 flex flex-wrap gap-2">
-                            @foreach ($admin->role->attributions as $attribution)
-                                <span class="rounded-full bg-[var(--isipa-soft)] px-3 py-1 text-xs font-semibold text-[var(--isipa-primary)]">{{ $attribution->permission->nom }}</span>
+                            @foreach ($admin->role?->attributions ?? [] as $attribution)
+                                <span class="rounded-full bg-[var(--isipa-soft)] px-3 py-1 text-xs font-semibold text-[var(--isipa-primary)]">{{ $attribution->permission->nom ?? 'N/A' }}</span>
                             @endforeach
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                         <div class="rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
                             <p class="font-semibold">Journal recent</p>
                             <div class="mt-2 space-y-2">
-                                @foreach ($admin->adminActivities as $activity)
+                                 @foreach ($admin->adminActivities->take(5) as $activity)
                                     <p>{{ $activity->created_at->format('d/m H:i') }} | {{ $activity->action }}</p>
                                 @endforeach
                             </div>
