@@ -16,6 +16,14 @@ class Paiement extends Model
         'reference_transaction'
           ];
 
+    protected function casts(): array
+    {
+        return [
+            'date_paiement' => 'date',
+            'montant' => 'decimal:2',
+        ];
+    }
+
           public function commande()
           {
               return $this->belongsTo(Commande::class, 'commande_id');

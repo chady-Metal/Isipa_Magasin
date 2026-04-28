@@ -16,6 +16,13 @@ class Avis extends Model
         'commentaire',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'note' => 'integer',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

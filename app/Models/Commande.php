@@ -68,11 +68,11 @@ class Commande extends Model
     public function statutLabel(): string
     {
         return match ($this->statut) {
-            self::STATUT_EN_ATTENTE, 'en attente' => 'En attente',
-            self::STATUT_CONFIRMEE, 'confirme' => 'Confirmee',
-            self::STATUT_LIVREE, 'livree' => 'Livree',
-            self::STATUT_REJETEE, 'rejetee' => 'Rejetee',
-            self::STATUT_ANNULEE, 'annulee' => 'Annulee',
+            self::STATUT_EN_ATTENTE => 'En attente',
+            self::STATUT_CONFIRMEE => 'Confirmée',
+            self::STATUT_LIVREE => 'Livrée',
+            self::STATUT_REJETEE => 'Rejetée',
+            self::STATUT_ANNULEE => 'Annulée',
             default => ucfirst((string) $this->statut),
         };
     }
