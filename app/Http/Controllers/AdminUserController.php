@@ -46,10 +46,17 @@ class AdminUserController extends Controller
     {
         $this->ensurePermission($request, 'admins.activity.view');
 
-        $admins = User::with(['role.attributions.permission', 'adminActivities' => fn ($query) => $query->latest()->take(10)])
+        // Charge les administrateurs avec leurs rôles et permissions.
+        // Charge toutes les activités d'administrateur pour ces administrateurs.
+        // La limitation à 10 sera appliquée en PHP après le chargement.
+        $admins = User::with(['role.attributions.permission', 'adminActivities'])
             ->whereHas('role', fn ($query) => $query->whereIn('nom', ['Super Administrateur', 'Administrateur', 'Gerant']))
             ->latest()
             ->paginate(12);
+
+        // Après avoir récupéré les administrateurs, on limite manuellement la collection
+        // des activités pour chaque administrateur aux 10 dernières (déjà triées par `latest()` dans la relation).
+        $admins->each(fn ($admin) => $admin->setRelation('adminActivities', $admin->adminActivities->take(10)));
 
         $roles = Role::whereIn('nom', ['Super Administrateur', 'Administrateur', 'Gerant'])->get();
 

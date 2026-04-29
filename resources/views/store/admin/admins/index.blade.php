@@ -10,7 +10,7 @@
     @if (auth()->user()->hasPermission('admins.create'))
         <section class="admin-card mb-6">
             <h2 class="text-xl font-black text-[var(--isipa-admin-ink)]">Creer un compte administrateur</h2>
-            <form method="POST" action="{{ route('admin.admins.store') }}" class="mt-4 grid gap-3 md:grid-cols-2" data-async>
+            <form method="POST" action="{{ route('admin.administrateurs.store') }}" class="mt-4 grid gap-3 md:grid-cols-2" data-async>
                 @csrf
                 <input type="text" name="name" class="store-input" placeholder="Nom complet" required />
                 <input type="email" name="email" class="store-input" placeholder="Gmail administrateur" required />
